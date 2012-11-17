@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+import path
+import argparse
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('directories', metavar='DIR', type=str, nargs='+',
+                   help='directory to be parsed')
+parser.add_argument('target', type=str, help='target hashed directory')
+
+args = parser.parse_args()
+print args
