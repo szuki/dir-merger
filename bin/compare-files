@@ -2,6 +2,7 @@
 
 import path
 import argparse
+from bidict import bidict
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('directories', metavar='DIR', type=str, nargs='+',
@@ -9,4 +10,18 @@ parser.add_argument('directories', metavar='DIR', type=str, nargs='+',
 parser.add_argument('target', type=str, help='target hashed directory')
 
 args = parser.parse_args()
-print args
+file_target = args.target
+compare_files = args.directories
+def make_dict(fname):
+    with open(fname) as fp:
+        return bidict(line.rsplit(' ', 1) for line in fp.read().splitlines())
+target_dict = make_dict(file_target)
+thashset = set(target_dict.values())
+
+cmp_files_dicts = []
+for compare_file in compare_files:
+    bid = make_dict(compare_file)
+    chashset = set(bid.values())
+    print 'DIFF: %s' % len(thashset ^ chashset)
+    same_set = (thashset & chashset)
+    print 'SAME: %s' % [path.path(bid[:s]).basename() for s in same_set]
